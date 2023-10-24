@@ -219,28 +219,31 @@ def iterate(iso,gamma,steps=1):
     return iso
 
 def mcmc2d(iso,gamma,samples=10,offset=0,interval=100,verbose=True,printToFile=False):
-    "Collect 'samples' samples of triangulations starting at 'iso' with parameter 'gamma'. 'offset' is the number of triangulations to be burnt (discarded initially). 'interval' is the number of triangulations between successive samples"
+    "Collect 'samples' samples of triangulations starting at 'iso' with parameter 'gamma'. 'offset' is the number of triangulations to be burnt (discarded initially). 'interval' is the number of triangulations between successive samples. Parameter `verbose` decides print behaviour. `printToFile` is the filename for the output file in the folder outputs/."
     samp =0
     
     s=Triangulation2.fromIsoSig(iso)
     f=s.fVector()
 
+    # output
     if printToFile!=False:
         name="outputs/mcmc2d_"+str(printToFile)+"_gamma_"+str(gamma)+"_samples_"+str(samples)+".txt"
-    # burn
-    if offset>0:
-        iso = iterate(iso,gamma,steps=int(offset))
-        s=Triangulation2.fromIsoSig(iso)
-        f=s.fVector()
+
+    #burn
+    if offset > 0:
+        for i in range(int(offset)):
+            iso, f = choosemove(iso,f,gamma)
     
     while samp < samples:
-        iso = iterate(iso,gamma,steps=int(interval))
-        s=Triangulation2.fromIsoSig(iso)
-        f=s.fVector()
+        #interval between samples
+        for i in range(int(interval)):
+            iso, f = choosemove(iso,f,gamma)
+            
+        #sample
         samp+=1
         if verbose:
             print("collecting triangulation",int(samp)," of ",int(samples)," :",iso)
         if printToFile:
             with open(name,"a") as fl:
                 fl.write(iso+"\n")
-            
+    return True
