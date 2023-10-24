@@ -4,8 +4,11 @@ This repository contains supplementary material for the article
 
 <i>Sampling triangulations of manifolds using Monte Carlo methods</i> by <a href="https://www.maths.usyd.edu.au/u/ega/">Eduardo Altmann</a> and <a href="https://sites.google.com/view/jonathan-spreer/">Jonathan Spreer</a>, <a href="https://arxiv.org/abs/2310.07372"> arXiv:2310.07372 </a>.
 
-In more detail, it contains a minimal working example of our MCMC method in dimensions 2 and 3 (Algorithm 1 and 2) to search through the space of all triangulations of (generalised triangulations of) surfaces and/or (1-vertex triangulations of) 3-manifolds. Both algorithms are presented in the form of a jupyter-notebook.
+Minimal working examples in dimensions 2 and 3 (Algorithm 1 and 2), exploring the space of all triangulations of (generalised triangulations of) surfaces and/or (1-vertex triangulations of) 3-manifolds, is found in the jupyter-notebooks.
 
+Folders:
+  - src/ source code of the MCMC method
+  - outputs/ stores longer outputs
 
 # Documentation
 
