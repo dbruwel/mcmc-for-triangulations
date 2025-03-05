@@ -1,5 +1,13 @@
 # MCMC methods for sampling triangulations of manifolds
 
+The is a fork of the original repository of the same name from https://github.com/jspreer.
+
+The intention of this fork is to modify the sampling algorithm to include a "potential" function that encourages the sampler to explore areas of the space that we are interested in (for example tringulations with high degree Alexander polynomial, etc.)
+
+**The original README is below.**
+
+---
+
 This repository contains supplementary material for the article 
 
 <i>Sampling triangulations of manifolds using Monte Carlo methods</i> by <a href="https://www.maths.usyd.edu.au/u/ega/">Eduardo Altmann</a> and <a href="https://sites.google.com/view/jonathan-spreer/">Jonathan Spreer</a>, <a href="https://arxiv.org/abs/2310.07372"> arXiv:2310.07372 </a>.
