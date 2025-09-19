@@ -3,7 +3,7 @@
 import math, random
 
 # import all functions etc. from regina
-from regina import *
+from regina import *  # type: ignore
 
 import sys
 
@@ -29,7 +29,7 @@ def surface(g, n):
         return None
 
     # create empty surface triangulation
-    s = Triangulation2()
+    s = Triangulation2()  # type: ignore
 
     # Build fundamental domain disk with 4g-2 triangles and boundary a 4g-gon
     #
@@ -43,36 +43,36 @@ def surface(g, n):
         b = s.simplex(s.size() - 2)
         # glue them together (gluing face iterates, face 2 gets never glued)
         if i % 2 == 0:
-            a.join(0, b, Perm3())
+            a.join(0, b, Perm3())  # type: ignore
         else:
-            a.join(1, b, Perm3())
+            a.join(1, b, Perm3())  # type: ignore
 
     # special case if we have a surface
     if g == 0:
         s.newSimplex()
         a = s.simplex(0)
         b = s.simplex(1)
-        a.join(2, b, Perm3())
-        a.join(1, b, Perm3())
-        a.join(0, b, Perm3())
+        a.join(2, b, Perm3())  # type: ignore
+        a.join(1, b, Perm3())  # type: ignore
+        a.join(0, b, Perm3())  # type: ignore
     # special case if we have a torus
     elif g == 1:
         a = s.simplex(0)
         b = s.simplex(1)
-        a.join(2, b, Perm3(2, 0, 1))
-        a.join(1, b, Perm3(1, 2, 0))
+        a.join(2, b, Perm3(2, 0, 1))  # type: ignore
+        a.join(1, b, Perm3(1, 2, 0))  # type: ignore
     # glue antipodal edges to each other to obtain genus g surface
     else:
         for k in range(2 * g - 2):
             a = s.simplex(k)
             b = s.simplex(k + 2 * g)
-            a.join(2, b, Perm3(1, 0, 2))
+            a.join(2, b, Perm3(1, 0, 2))  # type: ignore
         a = s.simplex(2 * g - 2)
         b = s.simplex(4 * g - 3)
-        a.join(2, b, Perm3(2, 0, 1))
+        a.join(2, b, Perm3(2, 0, 1))  # type: ignore
         a = s.simplex(2 * g - 1)
         b = s.simplex(0)
-        a.join(2, b, Perm3(2, 0, 1))
+        a.join(2, b, Perm3(2, 0, 1))  # type: ignore
 
     # add triangles as needed
     while s.size() < n:
@@ -114,7 +114,7 @@ def neighbours(iso, f, g):
     if g == 0:
         for n in range(f[2]):
             # create copy of tri in standard iso sig labelling
-            target = Triangulation2.fromIsoSig(iso)
+            target = Triangulation2.fromIsoSig(iso)  # type: ignore
             # test if move is possible and if so, perform it
             if target.pachner(target.triangle(n), True, False):
                 target.pachner(target.triangle(n), False, True)
@@ -128,7 +128,7 @@ def neighbours(iso, f, g):
     elif g == 1:
         for e in range(f[1]):
             # create copy of tri in standard iso sig labelling
-            target = Triangulation2.fromIsoSig(iso)
+            target = Triangulation2.fromIsoSig(iso)  # type: ignore
             # test if move is possible and if so, perform it
             if target.pachner(target.edge(e), True, False):
                 target.pachner(target.edge(e), False, True)
@@ -142,7 +142,7 @@ def neighbours(iso, f, g):
     if g == 2:
         for v in range(f[0]):
             # create copy of tri in standard iso sig labelling
-            target = Triangulation2.fromIsoSig(iso)
+            target = Triangulation2.fromIsoSig(iso)  # type: ignore
             # test if move is possible and if so, perform it
             if target.pachner(target.vertex(v), True, False):
                 target.pachner(target.vertex(v), False, True)
@@ -236,7 +236,7 @@ def randomise(iso, f, steps, gamma, interval, offset, name):
 def iterate(iso, gamma, steps=1):
     "Iterate the MCMC for 'steps' steps and return the iso of the final triangulation"
     st = 0
-    s = Triangulation2.fromIsoSig(iso)
+    s = Triangulation2.fromIsoSig(iso)  # type: ignore
     f = s.fVector()
     while st < steps:
         st += 1
@@ -250,7 +250,7 @@ def mcmc2d(
     "Collect 'samples' samples of triangulations starting at 'iso' with parameter 'gamma'. 'offset' is the number of triangulations to be burnt (discarded initially). 'interval' is the number of triangulations between successive samples. Parameter `verbose` decides print behaviour. `printToFile` is the filename for the output file in the folder outputs/."
     samp = 0
 
-    s = Triangulation2.fromIsoSig(iso)
+    s = Triangulation2.fromIsoSig(iso)  # type: ignore
     f = s.fVector()
 
     # output
