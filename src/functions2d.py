@@ -1,11 +1,10 @@
 ### Generate a seed triangulation
 
-import math, random
-
-# import all functions etc. from regina
-from regina import *  # type: ignore
-
+import math
+import random
 import sys
+
+from regina import *  # type: ignore
 
 sys.path.append("./src/")
 

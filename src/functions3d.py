@@ -1,4 +1,6 @@
-import time, math, random
+import math
+import random
+
 from regina import *  # type: ignore
 
 #######################################################
