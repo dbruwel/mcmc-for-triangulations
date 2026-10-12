@@ -1,3 +1,9 @@
+# Adapted from the original repository by Altmann & Spreer
+# (https://github.com/edugalt/MCMCForTriangulations). Functionally the same as
+# the original; changes are limited to imports and formatting.
+# Faster variants of `choosemove` are in functions3d_fast_accept_all.py and
+# functions3d_fast_reject.py.
+
 import math
 import random
 

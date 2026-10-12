@@ -1,3 +1,7 @@
+# Adapted from the original repository by Altmann & Spreer
+# (https://github.com/edugalt/MCMCForTriangulations). Functionally the same as
+# the original; changes are limited to imports and formatting.
+
 ### Generate a seed triangulation
 
 import math

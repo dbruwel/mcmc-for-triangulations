@@ -4,6 +4,19 @@ The is a fork of the original repository of the same name from https://github.co
 
 The intention of this fork is to modify the sampling algorithm to include a "potential" function that encourages the sampler to explore areas of the space that we are interested in (for example tringulations with high degree Alexander polynomial, etc.)
 
+## What is in this fork
+
+Lifted from Altmann & Spreer (essentially unchanged apart from imports and formatting):
+
+- `src/functions2d.py` and `src/functions3d.py`: the MCMC methods (Algorithms 1 and 2 of the paper).
+- `tutorial2d.ipynb` and `tutorial3d.ipynb`: the tutorial notebooks.
+
+Added in this fork:
+
+- `src/functions3d_fast_accept_all.py`: a faster drop-in for `choosemove` in `functions3d.py`. Instead of enumerating every neighbour up to isomorphism, it picks one valid site at random and corrects with a Metropolis-Hastings step using the ratio of automorphism group sizes.
+- `src/functions3d_fast_reject.py`: a Metropolis-Hastings sampler where the target weight is set explicitly in `get_pi` (currently $e^{-\gamma f_3^2}$), which is where a custom potential can be plugged in.
+- `speedup3d.ipynb`: compares effective sample size per step of the original `choosemove` and the accept-all version.
+
 **The original README is below.**
 
 ---

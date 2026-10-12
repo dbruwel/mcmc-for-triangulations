@@ -1,4 +1,15 @@
-"""New Script"""
+"""Faster variant of `choosemove` from `functions3d.py` (Algorithm 2 of Altmann & Spreer).
+
+The original `choosemove` enumerates every distinct neighbour (up to isomorphism)
+of the current triangulation at each step, which requires computing an
+isomorphism signature for every candidate move. This version instead picks a
+single valid site (triangle or edge) uniformly at random, performs the move, and
+corrects for the resulting bias with a Metropolis-Hastings step using the ratio
+of automorphism group sizes. Only one isomorphism signature is computed per step.
+
+The up/down proposal is the same as the original: an up move (2-3) is proposed
+with probability exp(-gamma * f_3), otherwise a down move (3-2).
+"""
 
 import math
 import random
@@ -7,40 +18,56 @@ from regina.engine import Triangulation3
 
 
 def get_aut(tri: Triangulation3) -> int:
-    """Gets the size of the automorphism group for a given triangulation.
+    """Return the size of the automorphism group of a triangulation.
 
-    Args:
-        tri (Triangulation3): The triangulation
+    Parameters
+    ----------
+    tri : Triangulation3
+        The triangulation.
 
-    Returns:
-        int: The size of the automorphism group
+    Returns
+    -------
+    int
+        The number of combinatorial automorphisms of `tri`.
     """
     return len(tri.findAllIsomorphisms(tri))
 
 
 def get_f_vector(tri: Triangulation3) -> list[int]:
-    """Compute the fVector for a given triangulation
+    """Return the f-vector of a triangulation.
 
-    Args:
-        tri (Triangulation3): The triangulation
+    Parameters
+    ----------
+    tri : Triangulation3
+        The triangulation.
 
-    Returns:
-        list[int]: The fVector
+    Returns
+    -------
+    list[int]
+        The f-vector (f_0, f_1, f_2, f_3).
     """
     f = tri.fVector()
     return f
 
 
 def perform_move(tri: Triangulation3, a: int, i: int) -> Triangulation3:
-    """Performs a given Pachner move on a specified site of a triangulation.
+    """Perform a Pachner move at a given site, without checking validity.
 
-    Args:
-        tri (Triangulation3): The initial triangulation
-        a (int): The type of move. 1 is a (3-2) move, 2 is a (2-3) move
-        i (int): The id of the face / edge to perform the move around
+    The input triangulation is copied and left unchanged.
 
-    Returns:
-        Triangulation3: The modified triangulation
+    Parameters
+    ----------
+    tri : Triangulation3
+        The initial triangulation.
+    a : int
+        The move type. 1 is a 2-3 move (up, on triangle `i`), 2 is a 3-2 move (down, on edge `i`).
+    i : int
+        The index of the triangle (a=1) or edge (a=2) to move on. Should come from `get_sites`.
+
+    Returns
+    -------
+    Triangulation3
+        The modified copy of `tri`.
     """
     target = Triangulation3(tri)
 
@@ -53,15 +80,21 @@ def perform_move(tri: Triangulation3, a: int, i: int) -> Triangulation3:
 
 
 def get_sites(tri: Triangulation3, f: list[int], a: int) -> list[int]:
-    """Enumerates all sites where a given move type can be performed.
+    """List all sites at which a given move type can be performed.
 
-    Args:
-        tri (Triangulation3): Triangulation3
-        f (list[int]): fVector of the triangulation
-        a (int): The move type, see `perform_move` for details
+    Parameters
+    ----------
+    tri : Triangulation3
+        The triangulation.
+    f : list[int]
+        The f-vector of `tri`.
+    a : int
+        The move type, see `perform_move`.
 
-    Returns:
-        list[int]: A list of the site ids where the given move type an be performed
+    Returns
+    -------
+    list[int]
+        Indices of the triangles (a=1) or edges (a=2) at which the move is valid.
     """
     sites = []
     target = Triangulation3(tri)
@@ -86,19 +119,35 @@ def choosemove(
     f: list[int] | None = None,
     aut: int | None = None,
 ) -> tuple[str, list[int], int]:
-    """Performes a step in the MCMC sequence
+    """Perform one step of the MCMC chain.
 
-    Args:
-        iso (str): The isomorhpism signature of the triangulation
-        gamma (float): The up vs down acceptance rate
-        f (list[int] | None, optional): The fVector of the triangulation associated to iso. Defaults to None.
-        aut (int | None, optional): The size of the automorhpism group of the triangulation associated to iso. Defaults to None.
+    Proposes an up move with probability exp(-gamma * f_3) (else a down move),
+    stays put with the same probability as the original `choosemove`, and
+    otherwise moves at a uniformly random valid site. The move is accepted with
+    probability min(1, |Aut(T')| / |Aut(T)|).
 
-    Raises:
-        RuntimeError: If the function passed without exiting
+    Passing `f` and `aut` from the previous step avoids recomputing them.
 
-    Returns:
-        tuple[str, list[int], int]: The new isomorphism signature, the new fVector, and the new automorphism group
+    Parameters
+    ----------
+    iso : str
+        Isomorphism signature (`isoSig_RidgeDegrees`) of the current triangulation.
+    gamma : float
+        Parameter controlling the up/down proposal, and hence the typical number of tetrahedra.
+    f : list[int] | None, optional
+        f-vector of the current triangulation. Computed if None.
+    aut : int | None, optional
+        Automorphism group size of the current triangulation. Computed if None.
+
+    Returns
+    -------
+    tuple[str, list[int], int]
+        The isomorphism signature, f-vector and automorphism group size of the next state.
+
+    Raises
+    ------
+    RuntimeError
+        If no branch returns (should never happen).
     """
     tri = Triangulation3.fromIsoSig(iso)
 
